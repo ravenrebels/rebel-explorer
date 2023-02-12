@@ -66,7 +66,7 @@ app.get("/debug", (req, res) => {
 });
 
 app.get("/gui-settings", (_, response) => {
-  response.send({ headline: CONFIG.headline, theme: CONFIG.theme });
+  response.send({ headline: CONFIG.headline, theme: CONFIG.theme, ipfs_gateway: CONFIG.ipfs_gateway });
 });
 app.get("/api/addresses", function (_, response) {
   const find = {

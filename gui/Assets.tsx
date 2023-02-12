@@ -16,7 +16,9 @@ import {
 } from "@nextui-org/react";
 export function Assets() {
   const [assets, setAssets] = React.useState(null);
-
+  const [gatewayURL, setGatewayURL] = React.useState(
+    "https://cloudflare-ipfs.com/ipfs/"
+  );
   const [filterText, setFilterText] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
 
@@ -36,6 +38,11 @@ export function Assets() {
   ).current;
 
   React.useEffect(() => {
+    axios.get("/gui-settings").then((response) => {
+      const settings = response.data;
+      const gateway = settings.ipfs_gateway;
+      setGatewayURL(gateway);
+    });
     axios
       .get("/api/assets")
       .then((axiosResponse) => {
@@ -136,10 +143,7 @@ export function Assets() {
                 </Table.Cell>
                 <Table.Cell>
                   {!!asset.ipfs_hash && (
-                    <Link
-                      href={"https://cloudflare-ipfs.com/ipfs/" + asset.ipfs_hash}
-                      target="_blank"
-                    >
+                    <Link href={gatewayURL + asset.ipfs_hash} target="_blank">
                       <Avatar
                         size="md"
                         squared
