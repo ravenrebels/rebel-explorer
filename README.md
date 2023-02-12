@@ -4,7 +4,11 @@ An blockchain explorer for Ravencoin and Ravencoin forks
 
 ## Before you install
 - You need to have Node.js and Git installed.
-- You need to have a Raven core node.
+
+- You can run the Explorer and use an online Ravencoin RPC service such as
+* https://rpc.ting.finance/ click on mainnet or testnet to find the endpoints.
+
+- The idea is that you run your own Raven core node.
 The node needs to be fully indexed and your raven.conf must include
     * txindex=1
     * addressindex=1
