@@ -29,7 +29,14 @@ export function Blocks() {
 
   const header = "Blocks";
   const body = (
-    <Table>
+    <Table
+      selectionMode="single"
+      onSelectionChange={(keys) => {
+        const blockHash = Object.values(keys)[0];
+        const URL = "index.html?route=BLOCK&hash=" + blockHash;;
+        window.location.href=URL;
+      }}
+    >
       <Table.Header>
         <Table.Column>Height</Table.Column>
         <Table.Column>Time</Table.Column>
