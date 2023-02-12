@@ -1,3 +1,9 @@
+dist
+node_modules
+images
+config.json
+
+
 # Logs
 logs
 *.log
