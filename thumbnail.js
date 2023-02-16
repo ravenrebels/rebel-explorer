@@ -40,7 +40,7 @@ const HOUR = 3600000;
 setInterval(function () {
   ipfsByAssetName = {};
   blockedIPFS = {};
-}, HOUR);
+}, HOUR / 4);
 const dir = path.resolve("./images");
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
