@@ -32,6 +32,7 @@ export function Assets() {
 
   const debouncedSearch = React.useRef(
     debounce(async (value) => {
+      console.log("debounced");
       setFilterText(value);
       setPage(1); //always reset the paginator when search changes
     }, 300)
@@ -87,12 +88,11 @@ export function Assets() {
   const body = (
     <>
       <Input
+        label=""
         clearable
         bordered
-        value={filterText}
         onChange={(event) => {
           const value = event.target.value;
-
           debouncedSearch(value);
         }}
       />
