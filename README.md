@@ -45,7 +45,7 @@ Update the config.json file with your information and restart restart the node.j
 The attributes "headline" and "theme" are used for the graphical user interface. Config is only read once at startup, so you need to restart the app if you change config. 
 
 ## Do changes
-Ifi you change the graphica user interface (gui folder), you can 
+If you change the graphical user interface (gui folder), you can 
 - run `npm run build`
 or
 - `npm run dev` this is a watcher that will listen for changes
