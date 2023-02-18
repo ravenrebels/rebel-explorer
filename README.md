@@ -32,11 +32,11 @@ The first time you try to start the Explorer, a config.json file will be created
 Update the config.json file with your information and restart restart the node.js app
 ```
 {
-    "raven_password": "YOUR PASSWORD",
-    "raven_username": "YOUR USERNAME",
-    "raven_url": "https://LOCALHOST:8766",
+    "raven_password": "anonymous",
+    "raven_username": "anonymous",
+    "raven_url": "https://rvn-rpc-testnet.ting.finance/rpc",
     "httpPort": 80,
-    "headline": "Ravencoin Mainnet",
+    "headline": "Ravencoin Testnet",
     "theme": "dark",
     "ipfs_gateway": "https://cloudflare-ipfs.com/ipfs/"
 }
