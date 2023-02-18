@@ -158,10 +158,10 @@ export function Assets() {
 function AssetAmount({ assetName }) {
   const asset = useAssetData(assetName);
 
-  if(!asset){
+  if (!asset) {
     return null;
   }
-  console.log("Asset", asset);
+
   return <div>{asset.amount.toLocaleString()}</div>;
 }
 function MyPaginator({ setPage, total, page, pageSize }) {
