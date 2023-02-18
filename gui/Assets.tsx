@@ -1,28 +1,24 @@
-import * as React from "react";
+import { Loading, Table } from "@nextui-org/react";
 import axios from "axios";
-import { MyCard } from "./MyCard";
-import { Link, Table } from "@nextui-org/react";
-import { Avatar } from "@nextui-org/react";
-import { Loading } from "@nextui-org/react";
 import { debounce } from "lodash";
+import * as React from "react";
+import { MyCard } from "./MyCard";
 
-import {
-  Button,
-  Input,
-  Modal,
-  Pagination,
-  Spacer,
-  Text,
-} from "@nextui-org/react";
+import { Input, Pagination, Spacer } from "@nextui-org/react";
+import { AssetImageLink } from "./AssetImageLink";
+import { AssetModal } from "./AssetModal";
+import useAssetData from "./useAssetData";
+
 export function Assets() {
-  const [assets, setAssets] = React.useState(null);
+  const [assets, setAssets] = React.useState([]);
   const [gatewayURL, setGatewayURL] = React.useState(
     "https://cloudflare-ipfs.com/ipfs/"
   );
   const [filterText, setFilterText] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const [assetName, setAssetName] = React.useState("");
+  //If we have selected an asset
+  const [selectedAssetName, setSelectedAssetName] = React.useState("");
 
   const [page, setPage] = React.useState(1);
   const PAGE_SIZE = 25;
@@ -32,7 +28,6 @@ export function Assets() {
 
   const debouncedSearch = React.useRef(
     debounce(async (value) => {
-      console.log("debounced");
       setFilterText(value);
       setPage(1); //always reset the paginator when search changes
     }, 300)
@@ -57,9 +52,9 @@ export function Assets() {
   if (!assets) {
     return <Loading />;
   }
-  const names = Object.keys(assets).sort();
+  const names = assets;
 
-  const assetsToShow = names.filter((asset) => {
+  const assetsToShow = names.filter((asset: string) => {
     if (!filterText) {
       return true;
     }
@@ -70,8 +65,6 @@ export function Assets() {
 
   let header = "Assets (" + names.length + ")";
 
-  const asset = assets[assetName];
-
   const displayedAssets = assetsToShow.filter(function (asset, index) {
     const lowerLimit = page * PAGE_SIZE - PAGE_SIZE;
     const upperLimit = page * PAGE_SIZE;
@@ -80,7 +73,7 @@ export function Assets() {
       return false;
     }
 
-    if (index > upperLimit) {
+    if (index >= upperLimit) {
       return false;
     }
     return true;
@@ -97,6 +90,7 @@ export function Assets() {
         }}
       />
       <Spacer />
+
       <MyPaginator
         page={page}
         pageSize={PAGE_SIZE}
@@ -104,10 +98,11 @@ export function Assets() {
         setPage={setPage}
       ></MyPaginator>
       <Spacer />
+
       <AssetModal
         modalVisible={modalVisible}
         closeModal={closeModal}
-        asset={asset}
+        assetName={selectedAssetName}
       />
 
       <Table
@@ -124,35 +119,33 @@ export function Assets() {
           <Table.Column>Amount</Table.Column>
         </Table.Header>
         <Table.Body>
-          {displayedAssets.map((name) => {
-            const asset = assets[name];
+          {displayedAssets.map((assetName: string) => {
             return (
-              <Table.Row key={name}>
-                <Table.Cell>{names.indexOf(name) + 1}</Table.Cell>
+              <Table.Row key={assetName}>
+                <Table.Cell>{names.indexOf(assetName) + 1}</Table.Cell>
                 <Table.Cell>
                   <a
-                    title={name}
+                    title={assetName}
                     href={"#"}
                     onClick={() => {
-                      setAssetName(name);
+                      setSelectedAssetName(assetName);
+
                       showModal();
                     }}
                   >
-                    {name}
+                    {assetName}
                   </a>
                 </Table.Cell>
                 <Table.Cell>
-                  {!!asset.ipfs_hash && (
-                    <Link href={gatewayURL + asset.ipfs_hash} target="_blank">
-                      <Avatar
-                        size="md"
-                        squared
-                        src={"/thumbnail?assetName=" + encodeURIComponent(name)}
-                      />
-                    </Link>
-                  )}
+                  <AssetImageLink
+                    assetName={assetName}
+                    gatewayURL={gatewayURL}
+                  ></AssetImageLink>
                 </Table.Cell>
-                <Table.Cell>{asset.amount.toLocaleString()}</Table.Cell>
+
+                <Table.Cell>
+                  <AssetAmount assetName={assetName} />
+                </Table.Cell>
               </Table.Row>
             );
           })}
@@ -162,68 +155,20 @@ export function Assets() {
   );
   return <MyCard header={header} body={body} />;
 }
+function AssetAmount({ assetName }) {
+  const asset = useAssetData(assetName);
 
+  if(!asset){
+    return null;
+  }
+  console.log("Asset", asset);
+  return <div>{asset.amount.toLocaleString()}</div>;
+}
 function MyPaginator({ setPage, total, page, pageSize }) {
   const numberOfPages = Math.ceil(total / pageSize);
   return (
     <div>
       <Pagination total={numberOfPages} page={page} onChange={setPage} />
     </div>
-  );
-}
-
-function AssetModal({ modalVisible, closeModal, asset }) {
-  if (!asset) {
-    return null;
-  }
-  return (
-    <Modal
-      closeButton
-      aria-labelledby="modal-title"
-      open={modalVisible}
-      onClose={closeModal}
-    >
-      <Modal.Header>
-        <Text id="modal-title" size={18}>
-          Asset data for{" "}
-          <Text b size={18}>
-            {asset.name}
-          </Text>
-        </Text>
-      </Modal.Header>
-      <Modal.Body>
-        <Meta asset={asset} />
-      </Modal.Body>
-    </Modal>
-  );
-}
-export function Meta({ asset }) {
-  const [meta, setMeta] = React.useState(asset);
-  console.log("meta", meta);
-  if (!meta) {
-    return null;
-  }
-  const ipfs = meta.ipfs_hash;
-
-  return (
-    <>
-      <pre>{JSON.stringify(meta, null, 4)}</pre>
-      {ipfs && (
-        <div
-          style={{
-            textAlign: "center",
-          }}
-        >
-          <a href={"https://ipfs.io/ipfs/" + ipfs} target="_blank">
-            IPFS link
-            <br />
-            <img
-              width="200"
-              src={"/thumbnail?assetName=" + encodeURIComponent(asset.name)}
-            />
-          </a>
-        </div>
-      )}
-    </>
   );
 }

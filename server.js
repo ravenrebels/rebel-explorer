@@ -66,7 +66,11 @@ app.get("/debug", (req, res) => {
 });
 
 app.get("/gui-settings", (_, response) => {
-  response.send({ headline: CONFIG.headline, theme: CONFIG.theme, ipfs_gateway: CONFIG.ipfs_gateway });
+  response.send({
+    headline: CONFIG.headline,
+    theme: CONFIG.theme,
+    ipfs_gateway: CONFIG.ipfs_gateway,
+  });
 });
 app.get("/api/addresses", function (_, response) {
   const find = {
@@ -174,16 +178,6 @@ app.get("/api/blocks", async (req, res) => {
   }
 });
 
-//CACHE ASSETS
-/*
-  At start we assign a promise to fetch all assets to the cache
-  So there is always a valid promise.
-  Each 4 minutes (interval) we get a new promise to fetch all assets, once resolve we assign the promise to the cache
-  Result: The cache always refers to a resolved promise to fetch assets (except for first 10 seconds during startup)
-*/
-const assetsCache = {
-  listAssets: blockchain.listAssets(),
-};
 setInterval(() => {
   //Fetch assets and assign the resolved promise to assetsCache WHEN DONE
   const promise = blockchain.listAssets();
@@ -193,17 +187,21 @@ setInterval(() => {
       console.log("Error fetching assets");
     });
 }, 4 * 60 * 1000);
-app.get("/api/assets", (request, response) => {
-  //Get promise from cache
-  const promise = assetsCache.listAssets;
 
+app.get("/api/assetdata/:name", (request, response) => {
+  const name = "" + request.params.name;
+
+  blockchain
+    .getAssetData(name)
+    .then((data) => response.send(data))
+    .catch((e) => response.status(500).send({ error: "" + e }));
+});
+app.get("/api/assets", (request, response) => {
+  const promise = blockchain.getAssets();
   promise
-    .then((assets) => {
-      response.send(assets);
-      return;
-    })
+    .then((assets) => response.send(assets))
     .catch((e) => {
-      response.status(500).send({ error: "Something whent wrong" });
+      res.status(500).send({ error: "" + e });
     });
 });
 

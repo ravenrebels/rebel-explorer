@@ -185,6 +185,9 @@ async function getBlocksByHashes(hashes) {
   return blocks;
 }
 
+export async function getAssets() {
+  return Reader.getAllAssets();
+}
 export async function getAddressDeltas(address) {
   return Reader.getAddressDeltas(address);
 }
@@ -194,6 +197,7 @@ export default {
   getAddressDeltas,
   getAddressUTXOs,
   getAssetData,
+  getAssets,
   getBlock,
   getBlockByHeight,
   getBlockHash,

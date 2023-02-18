@@ -1,21 +1,11 @@
 import * as React from "react";
-import { getParam } from "./getParam";
-import { Meta } from "./Assets";
-import axios from "axios";
+import { getParam } from "./getParam"; 
+import { Meta } from "./AssetModal";
+import useAssetData from "./useAssetData";
+
 export function Asset() {
-  const [data, setData] = React.useState(null);
   const assetName = "" + getParam("name");
-  React.useEffect(() => {
-    const searchParams = new URLSearchParams();
-    searchParams.append("name", assetName);
-
-    const URL = "/api/getassetdata?" + searchParams.toString();
-
-    axios.get(URL).then((response) => {
-      setData(response.data);
-      console.log("Response", response);
-    });
-  }, []);
+  const data = useAssetData(assetName);
 
   if (!data) {
     return (
