@@ -29,11 +29,13 @@ export function Meta({ asset }) {
 }
 export function AssetModal({ modalVisible, closeModal, assetName }) {
   if (modalVisible === false) {
-    return null;
+    //Returned a closed modal
+    return <Modal open={modalVisible} />;
   }
   const asset = useAssetData(assetName);
   if (!asset) {
-    return null;
+    //Returned a closed modal
+    return <Modal open={modalVisible} />;
   }
   return (
     <Modal
