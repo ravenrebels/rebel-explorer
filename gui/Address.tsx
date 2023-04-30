@@ -84,7 +84,7 @@ export function Address() {
 
       <MyCard header="Assets" body={<AssetTable assets={data.assets} />} />
       <Spacer></Spacer>
-      <MyCard header={header} body={<Unspent unspent={unspent} />} />
+      <MyCard header={header} body={<Unspent address={address} unspent={unspent} />} />
 
       {false && (
         <MyCard
@@ -96,7 +96,7 @@ export function Address() {
   );
 }
 
-function Unspent({ unspent }) {
+function Unspent({ address, unspent }) {
   if (!unspent) {
     return (
       <>
@@ -104,7 +104,11 @@ function Unspent({ unspent }) {
       </>
     );
   }
+  if(unspent.length > 100){
+    const URL = "/api/getaddressutxos/" + address;
+    return <div><a target="_blank" href={URL}>{unspent.length.toLocaleString()}  unspent</a></div>
 
+  }
   unspent = unspent.map((u) => {
     u.value = u.satoshis / 1e8;
     u.text = numberConverter.toWords(u.value);

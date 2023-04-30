@@ -30,19 +30,7 @@ app.use(compression());
 app.set("json spaces", 4);
 const port = process.env.PORT || CONFIG.httpPort || 80;
 
-/*
-//Start index every X seconds
-setInterval(() => {
-  console.log("Asking for update", new Date().toLocaleString());
-  try {
-    const totalUpdate = false;
-    update(totalUpdate).catch((e) => {
-      console.log("Could not update");
-      console.dir(e);
-    });
-  } catch (e) {}
-}, 10000);
-*/
+ 
 //Send human readable JSON
 app.set("json spaces", 4);
 
@@ -101,9 +89,8 @@ app.get("/gettype/:value", async function (req, res) {
 });
 
 app.get("/api/addressdeltas/:address", (request, response) => {
-  const address = request.params.address;
-
-  const promise = Reader.getAddressDeltas(addres);
+  const address = request.params.address; 
+  const promise = Reader.getAddressDeltas(address);
   promise.then(response.send).catch((e) => {
     promise.catch((e) => {
       res.status(400).send({ error: "" + e });
@@ -178,15 +165,7 @@ app.get("/api/blocks", async (req, res) => {
   }
 });
 
-setInterval(() => {
-  //Fetch assets and assign the resolved promise to assetsCache WHEN DONE
-  const promise = blockchain.listAssets();
-  promise
-    .then((data) => (assetsCache.listAssets = promise))
-    .catch((e) => {
-      console.log("Error fetching assets");
-    });
-}, 4 * 60 * 1000);
+ 
 
 app.get("/api/assetdata/:name", (request, response) => {
   const name = "" + request.params.name;
