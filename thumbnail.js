@@ -98,7 +98,6 @@ export default async function thumbnail(request, response) {
   if (fs.existsSync(contentTypeFilePath)) {
     const contentType = fs.readFileSync(contentTypeFilePath, "utf-8");
     if (isImage(contentType) === false) {
-      console.log("Return before talking to Ravencoin IPFS");
       response.status(204).send({
         error: "Wrong content type ",
         contentType,
@@ -114,8 +113,6 @@ export default async function thumbnail(request, response) {
     try {
       const contentType = fs.readFileSync(contentTypeFilePath, "utf-8");
       response.set("content-type", contentType);
-
-      console.log(ipfs, "exists, read from disk, content type", contentType);
     } catch (e) {
       //If problem with the content type file, delete it
       fs.rmSync(contentTypeFilePath, {
@@ -137,8 +134,8 @@ export default async function thumbnail(request, response) {
     const config = {
       timeout: 5000, //5 seconds timeout
       headers: {
-        "Accept-Encoding": "gzip,deflate,compress"
-      }
+        "Accept-Encoding": "gzip,deflate,compress",
+      },
     };
     const asdf = await axios.head(url, config);
     console.log("HTTP HEAD, response for", ipfs);
@@ -192,7 +189,7 @@ export default async function thumbnail(request, response) {
     response.send(size);
   } catch (e) {
     console.log(ipfs, "mega error", e + "");
- 
+
     blockedIPFS[ipfs] = new Date().getMilliseconds();
     response.status(500).send({ error: e + "" });
     return;

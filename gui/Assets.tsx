@@ -63,7 +63,7 @@ export function Assets() {
     return asset.toUpperCase().startsWith(filter);
   });
 
-  let header = "Assets (" + names.length + ")";
+  let header = "Assets (" + names.length.toLocaleString() + ")";
 
   const displayedAssets = assetsToShow.filter(function (asset, index) {
     const lowerLimit = page * PAGE_SIZE - PAGE_SIZE;
