@@ -30,7 +30,6 @@ app.use(compression());
 app.set("json spaces", 4);
 const port = process.env.PORT || CONFIG.httpPort || 80;
 
- 
 //Send human readable JSON
 app.set("json spaces", 4);
 
@@ -89,12 +88,17 @@ app.get("/gettype/:value", async function (req, res) {
 });
 
 app.get("/api/addressdeltas/:address", (request, response) => {
-  const address = request.params.address; 
-  const promise = Reader.getAddressDeltas(address);
-  promise.then(response.send).catch((e) => {
-    promise.catch((e) => {
-      res.status(400).send({ error: "" + e });
-    });
+  const address = request.params.address;
+  const promise = blockchain.getAddressDeltas(address);
+
+  function ready(r) {
+    //Add human readable amount
+    r.map((item) => (item.amount = item.satoshis / 1e8));
+    response.send(r);
+  }
+  promise.then(ready).catch((e) => {
+    console.dir(e);
+    response.status(400).send({ error: "" + e });
   });
 });
 
@@ -164,8 +168,6 @@ app.get("/api/blocks", async (req, res) => {
     res.status(500).send({ error: "" + e });
   }
 });
-
- 
 
 app.get("/api/assetdata/:name", (request, response) => {
   const name = "" + request.params.name;

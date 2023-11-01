@@ -82,9 +82,19 @@ export function Address() {
       <MyCard header="Total received" body={formatNumber(data.received)} />
       <Spacer></Spacer>
 
-      <MyCard header="Assets" body={<AssetTable assets={data.assets} />} />
+      <MyCard
+        header="Inputs and outputs"
+        body={<a href={"/api/addressdeltas/" + address}>Link</a>}
+      ></MyCard>
+
       <Spacer></Spacer>
-      <MyCard header={header} body={<Unspent address={address} unspent={unspent} />} />
+      <MyCard header="Assets" body={<AssetTable assets={data.assets} />} />
+
+      <Spacer></Spacer>
+      <MyCard
+        header={header}
+        body={<Unspent address={address} unspent={unspent} />}
+      />
 
       {false && (
         <MyCard
@@ -104,10 +114,15 @@ function Unspent({ address, unspent }) {
       </>
     );
   }
-  if(unspent.length > 100){
+  if (unspent.length > 100) {
     const URL = "/api/getaddressutxos/" + address;
-    return <div><a target="_blank" href={URL}>{unspent.length.toLocaleString()}  unspent</a></div>
-
+    return (
+      <div>
+        <a target="_blank" href={URL}>
+          {unspent.length.toLocaleString()} unspent
+        </a>
+      </div>
+    );
   }
   unspent = unspent.map((u) => {
     u.value = u.satoshis / 1e8;
