@@ -34,44 +34,44 @@ export function Transaction() {
 
       <Spacer />
       <MyCard
-        header={"Block time"}
-        body={
-          <div>
-            <p>
-              Your local time:{" "}
-              {new Date(data.blocktime * 1000).toLocaleString()}
-            </p>
-            <p>ISO time: {new Date(data.blocktime * 1000).toISOString()}</p>
-          </div>
-        }
-      />
-
-      <Spacer />
-      <MyCard
-        header="Transaction fee"
-        body={
-          <Fee
-            transaction={data}
-            baseCurrency={config ? config.baseCurrency : ""}
-          />
-        }
-      />
-      <Spacer />
-      <MyCard
         header={"Transaction details"}
         body={
-          <Table>
-            <Table.Header>
-              <Table.Column>Transaction Inputs</Table.Column>
-              <Table.Column>Transaction Outputs</Table.Column>
-            </Table.Header>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>{data.vin.length}</Table.Cell>
-                <Table.Cell> {data.vout.length}</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
+          <div>
+            <Table style={{ tableLayout: "fixed" }}>
+              <Table.Header>
+                <Table.Column>Local time</Table.Column>
+                <Table.Column>ISO time</Table.Column>
+              </Table.Header>
+              <Table.Body>
+                <Table.Row>
+                  <Table.Cell>
+                    {new Date(data.blocktime * 1000).toLocaleString()}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {new Date(data.blocktime * 1000).toISOString()}
+                  </Table.Cell>
+                </Table.Row>
+              </Table.Body>
+            </Table>
+
+            <Table style={{ tableLayout: "fixed" }}>
+              <Table.Header>
+                <Table.Column>Transaction Inputs</Table.Column>
+                <Table.Column>Transaction Outputs</Table.Column>
+              </Table.Header>
+              <Table.Body>
+                <Table.Row>
+                  <Table.Cell>{data.vin.length}</Table.Cell>
+                  <Table.Cell> {data.vout.length}</Table.Cell>
+                </Table.Row>
+              </Table.Body>
+            </Table>
+
+            <Fee
+              transaction={data}
+              baseCurrency={config ? config.baseCurrency : ""}
+            />
+          </div>
         }
       />
 
@@ -111,10 +111,18 @@ function Fee({
     return <div>{fee}</div>;
   } else if (baseCurrency === "RVN") {
     return (
-      <div>
-        <p>RVN: {fee}</p>
-        <p>USD: {USD}</p>
-      </div>
+      <Table style={{ tableLayout: "fixed" }}>
+        <Table.Header>
+          <Table.Column>Fee {baseCurrency}</Table.Column>
+          <Table.Column>Fee USD</Table.Column>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>{fee}</Table.Cell>
+            <Table.Cell> {USD}</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
     );
   }
 }
