@@ -108,7 +108,16 @@ function Fee({
   }, [fee, baseCurrency]);
 
   if (baseCurrency !== "RVN") {
-    return <div>{fee}</div>;
+    return <Table style={{ tableLayout: "fixed" }}>
+      <Table.Header>
+        <Table.Column>Fee {baseCurrency}</Table.Column>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell>{fee}</Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    </Table>;
   } else if (baseCurrency === "RVN") {
     return (
       <Table style={{ tableLayout: "fixed" }}>
