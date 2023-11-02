@@ -54,6 +54,7 @@ app.get("/debug", (req, res) => {
 
 app.get("/gui-settings", (_, response) => {
   response.send({
+    baseCurrency: CONFIG.baseCurrency,
     headline: CONFIG.headline,
     theme: CONFIG.theme,
     ipfs_gateway: CONFIG.ipfs_gateway,
