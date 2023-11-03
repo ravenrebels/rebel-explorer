@@ -5,9 +5,10 @@ import axios from "axios";
 import { MyCard } from "./MyCard";
 import { Spacer, Table } from "@nextui-org/react";
 import { useConfig } from "./useConfig";
+import { useRavencoinUSD } from "./useRavencoinUSD";
 
 export function Transaction() {
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState<ITransaction | null>(null);
   const config = useConfig();
   const id = getParam("id");
 
@@ -81,6 +82,7 @@ export function Transaction() {
   );
 }
 interface ITransaction {
+  blocktime: number;
   vin: { value: number; coinbase?: boolean }[];
   vout: { value: number }[];
 }
@@ -92,32 +94,27 @@ function Fee({
   baseCurrency: string;
   transaction: ITransaction;
 }) {
-  const [USD, setUSD] = React.useState(0);
+  const rvnUsdRate = useRavencoinUSD();
   const fee = getFee(transaction);
 
-  React.useEffect(() => {
-    if (baseCurrency !== "RVN") {
-      return;
-    }
-    if (typeof fee === "number") {
-      getFeeValueInDollars(fee).then((value) => {
-        setUSD(value);
-        console.log(value);
-      });
-    }
-  }, [fee, baseCurrency]);
+  let usdDisplayValue = "";
+  if (typeof fee === "number" && rvnUsdRate) {
+    usdDisplayValue = "" + (fee * rvnUsdRate);
+  }
 
   if (baseCurrency !== "RVN") {
-    return <Table style={{ tableLayout: "fixed" }}>
-      <Table.Header>
-        <Table.Column>Fee {baseCurrency}</Table.Column>
-      </Table.Header>
-      <Table.Body>
-        <Table.Row>
-          <Table.Cell>{fee}</Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table>;
+    return (
+      <Table style={{ tableLayout: "fixed" }}>
+        <Table.Header>
+          <Table.Column>Fee {baseCurrency}</Table.Column>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>{fee}</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    );
   } else if (baseCurrency === "RVN") {
     return (
       <Table style={{ tableLayout: "fixed" }}>
@@ -128,7 +125,7 @@ function Fee({
         <Table.Body>
           <Table.Row>
             <Table.Cell>{fee}</Table.Cell>
-            <Table.Cell> {USD}</Table.Cell>
+            <Table.Cell> {usdDisplayValue}</Table.Cell>
           </Table.Row>
         </Table.Body>
       </Table>

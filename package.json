@@ -19,6 +19,7 @@
     "@ravenrebels/ravencoin-reader": "^0.0.7",
     "@ravenrebels/ravencoin-rpc": "^0.3.3",
     "@types/lodash": "^4.14.188",
+    "@types/react": "^18.2.34",
     "axios": "^1.5.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
