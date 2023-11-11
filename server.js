@@ -109,7 +109,10 @@ app.get("/api/balancebyaddress/:address", (req, res) => {
 
   res.send(balance);
 });
-
+app.get("/api/mempool", async (_, response) => {
+  const mempool = await blockchain.getRawMempool();
+  response.send(mempool);
+});
 app.get("/memory", function (_, response) {
   const m = process.memoryUsage();
   response.send(m);
