@@ -3,8 +3,14 @@ import axios from "axios";
 import { Card, Spacer, Table, Text } from "@nextui-org/react";
 import { MyCard } from "./MyCard";
 
+interface IBlock {
+  height: number;
+  time: number;
+  hash: string;
+  tx: any;
+}
 export function Blocks() {
-  const [blocks, setBlocks] = React.useState([]);
+  const [blocks, setBlocks] = React.useState<IBlock[]>([]);
   const [mempool, setMempool] = React.useState({});
   React.useEffect(() => {
     async function work() {
@@ -22,7 +28,7 @@ export function Blocks() {
 
     const interval = setInterval(work, 20000);
     return () => {
-      clearInterval(interval);
+      clearInterval(interval as any);
     };
   }, []);
 
@@ -68,7 +74,7 @@ export function Blocks() {
     <div>
       <MyCard header={header} body={body} />
       <Spacer /> <Spacer />
-      <MyCard header="Mempool length" body={Object.keys(mempool).length} />
+      <MyCard header="Mempool items" body={Object.keys(mempool).length} />
       <Spacer />
     </div>
   );
