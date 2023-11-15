@@ -4,7 +4,7 @@ import { ITransaction } from "./ITransaction";
 import { useTransaction } from "./useTransaction";
 
 export function Inputs({ transaction }: { transaction: ITransaction }) {
-  const url = "http://localhost:8080/index.html?route=ADDRESS&address=";
+  const url = "/index.html?route=ADDRESS&address=";
 
   return (
     <div>

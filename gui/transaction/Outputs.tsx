@@ -11,7 +11,7 @@ export function Outputs({ transaction }: { transaction: ITransaction }) {
       </Table.Header>
       <Table.Body>
         {transaction.vout.map((item: any) => {
-          const url = "http://localhost:8080/index.html?route=ADDRESS&address=";
+          const url = "/index.html?route=ADDRESS&address=";
 
           const addy = item.scriptPubKey.addresses[0];
 
