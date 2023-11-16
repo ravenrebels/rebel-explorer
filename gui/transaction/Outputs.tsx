@@ -1,8 +1,11 @@
 import * as React from "react";
 import { ITransaction } from "./ITransaction";
 import { Table } from "@nextui-org/react";
-import { useTransaction } from "./useTransaction";
+
 export function Outputs({ transaction }: { transaction: ITransaction }) {
+  if (!transaction) {
+    return null;
+  }
   return (
     <Table style={{ tableLayout: "fixed" }}>
       <Table.Header>
@@ -10,9 +13,22 @@ export function Outputs({ transaction }: { transaction: ITransaction }) {
         <Table.Column>Value</Table.Column>
       </Table.Header>
       <Table.Body>
-        {transaction.vout.map((item: any) => {
+        {transaction.vout.map((item: any, index:number) => {
           const url = "/index.html?route=ADDRESS&address=";
-
+ 
+          if (
+            !item.scriptPubKey.addresses ||
+            item.scriptPubKey.addresses.length === 0
+          ) {
+            return (
+              <Table.Row>
+                <Table.Cell>
+                 OP RETURN
+                </Table.Cell>
+                <Table.Cell>nulldata</Table.Cell>
+              </Table.Row>
+            );
+          }
           const addy = item.scriptPubKey.addresses[0];
 
           let amount = item.value.toLocaleString();
@@ -34,4 +50,3 @@ export function Outputs({ transaction }: { transaction: ITransaction }) {
     </Table>
   );
 }
-
