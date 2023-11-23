@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Table } from "@nextui-org/react";
+import { Loading, Table } from "@nextui-org/react";
 import { useFetch } from "../useFetch";
 
 export function History({ address }: { address: string | null }) {
@@ -8,10 +8,11 @@ export function History({ address }: { address: string | null }) {
   const deltas = useFetch(URL);
   console.log(deltas);
   if (!deltas) {
-    return <div></div>;
-  }
-  if (deltas.length === 0) {
-    return <div>History</div>;
+    return (
+      <div>
+        <Loading></Loading>
+      </div>
+    );
   }
 
   if (deltas.length > 500) {
