@@ -1,6 +1,6 @@
 import * as React from "react";
 import axios from "axios";
-
+import { getHistory } from "@ravenrebels/ravencoin-history-list";
 //Parcel will handle the require call, no worries
 //@ts-ignore
 const numberConverter = require("number-to-words");
@@ -70,10 +70,7 @@ export function Address() {
       ></Received>
       <Spacer></Spacer>
 
-      <MyCard
-        header="Inputs and outputs"
-        body={<a href={"/api/addressdeltas/" + address}>Link</a>}
-      ></MyCard>
+      <MyCard header="History" body={<History address={address} />} />
 
       <Spacer></Spacer>
       <MyCard header="Assets" body={<AssetTable assets={data.assets} />} />
@@ -135,7 +132,10 @@ function Balance({ balance, baseCurrency, rvnUsdRate }: IBalanceProps) {
       <MyCard header="RVN" body={formatNumber(balanceAmount)}></MyCard>
     );
     const usd = (
-      <MyCard header="USD" body={formatNumber(balanceAmount * rvnUsdRate)}></MyCard>
+      <MyCard
+        header="USD"
+        body={formatNumber(balanceAmount * rvnUsdRate)}
+      ></MyCard>
     );
     const tutti = (
       <div>
@@ -260,4 +260,64 @@ function getTwoDecimalTrunc(num: number) {
   //In JavaScript the number 77866.98 minus 111 minus 0.2 equals 77755.95999999999
   //We want it to be 77755.96
   return Math.trunc(num * 100) / 100;
+}
+
+function History({ address }: { address: string | null }) {
+  const URL = "/api/addressdeltas/" + address;
+
+  const [deltas, setDeltas] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (address) {
+      async function work() {
+        const response = await axios.get(URL);
+
+        setDeltas(response.data);
+      }
+      work();
+    }
+  }, [address]);
+
+  if (!deltas) {
+    return <div>History</div>;
+  }
+
+  if (deltas.length > 500) {
+    return (
+      <div>
+        This address have more has {deltas.length.toLocaleString()} history
+        items. <a href={URL}>Full history</a>
+      </div>
+    );
+  }
+  deltas.sort((d1, d2) => (d1.height > d2.height ? -1 : 1));
+  const rows = deltas.map((delta) => {
+    const URL = "?route=TRANSACTION&id=" + delta.txid;
+    return (
+      <Table.Row key={delta.txid + "_" + delta.index}>
+        <Table.Cell>
+          <a href={URL}>{delta.assetName}</a>
+        </Table.Cell>
+        <Table.Cell>{delta.amount.toLocaleString()}</Table.Cell>
+        <Table.Cell>{delta.height.toLocaleString()}</Table.Cell>
+      </Table.Row>
+    );
+  });
+  return (
+    <Table>
+      <Table.Header>
+        <Table.Column>Asset</Table.Column>
+        <Table.Column>Amount</Table.Column>
+        <Table.Column>Block heights</Table.Column>
+      </Table.Header>
+      <Table.Body>{rows}</Table.Body>
+      <Table.Pagination
+        shadow
+        noMargin
+        align="center"
+        rowsPerPage={10}
+        onPageChange={(page) => console.log({ page })}
+      />
+    </Table>
+  );
 }
