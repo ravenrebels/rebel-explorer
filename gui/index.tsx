@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { Address } from "./Address";
+import { Address } from "./address/Address";
 
 import { Blocks } from "./Blocks";
 import Routes from "./Routes";
