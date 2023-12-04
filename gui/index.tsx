@@ -7,7 +7,7 @@ import Routes from "./Routes";
 import { getParam } from "./getParam";
 import { Block } from "./Block";
 import { Navigator } from "./Navigator";
-import { NextUIProvider, Text } from "@nextui-org/react";
+import { NextUIProvider, Spacer, Text } from "@nextui-org/react";
 
 import { createTheme } from "@nextui-org/react";
 import { Transaction } from "./transaction/Transaction";
@@ -68,6 +68,7 @@ function App() {
     <NextUIProvider theme={theme}>
       <Navigator />
       {<CurrentView route={route}></CurrentView>}
+      <Spacer></Spacer>
       <Footer></Footer>
     </NextUIProvider>
   );

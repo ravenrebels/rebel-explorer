@@ -51,12 +51,13 @@ export function Address() {
         received={data.received}
         rvnUsdRate={rvnUsdRate}
       ></Received>
-      <Spacer></Spacer>
-
-      <MyCard header="History" body={<History address={address} />} />
 
       <Spacer></Spacer>
       <MyCard header="Assets" body={<AssetTable assets={data.assets} />} />
+
+      <Spacer></Spacer>
+
+      <MyCard header="History" body={<History address={address} />} />
 
       <Spacer></Spacer>
       <MyCard
