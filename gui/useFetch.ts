@@ -10,6 +10,5 @@ export function useFetch(url: string): any {
     }
     work();
   }, [url]);
-  console.log("Fetch", url, "returns", data);
   return data;
 }

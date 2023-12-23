@@ -6,7 +6,6 @@ export function History({ address }: { address: string | null }) {
   const URL = "/api/addressdeltas/" + address;
 
   const deltas = useFetch(URL);
-  console.log(deltas);
   if (!deltas) {
     return (
       <div>
@@ -23,7 +22,10 @@ export function History({ address }: { address: string | null }) {
       </div>
     );
   }
-  deltas.sort((d1, d2) => (d1.height > d2.height ? -1 : 1));
+  interface IHeight {
+    height: number;
+  }
+  deltas.sort((d1: IHeight, d2: IHeight) => (d1.height > d2.height ? -1 : 1));
   const rows = deltas.map((delta) => {
     const URL = "?route=TRANSACTION&id=" + delta.txid;
     return (
@@ -33,6 +35,9 @@ export function History({ address }: { address: string | null }) {
         </Table.Cell>
         <Table.Cell>{delta.amount.toLocaleString()}</Table.Cell>
         <Table.Cell>{delta.height.toLocaleString()}</Table.Cell>
+        <Table.Cell>
+          <Time height={delta.height}></Time>
+        </Table.Cell>
       </Table.Row>
     );
   });
@@ -42,6 +47,7 @@ export function History({ address }: { address: string | null }) {
         <Table.Column>Asset</Table.Column>
         <Table.Column>Amount</Table.Column>
         <Table.Column>Block height</Table.Column>
+        <Table.Column>Date</Table.Column>
       </Table.Header>
       <Table.Body>{rows}</Table.Body>
       <Table.Pagination
@@ -53,4 +59,13 @@ export function History({ address }: { address: string | null }) {
       />
     </Table>
   );
+}
+
+function Time({ height }) {
+  const block = useFetch("/api/blocks/" + height);
+
+  if (!block) {
+    return null;
+  }
+  return <div>{new Date(1000 * block.time).toLocaleString()}</div>;
 }
