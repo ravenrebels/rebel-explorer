@@ -10,6 +10,7 @@ export function TransactionDetails({ config, transaction }) {
   const dateLocaleString = transaction.blocktime
     ? new Date(transaction.blocktime * 1000).toLocaleString()
     : "";
+
   return (
     <MyCard
       header={"Transaction details"}
@@ -45,6 +46,20 @@ export function TransactionDetails({ config, transaction }) {
             transaction={transaction}
             baseCurrency={config ? config.baseCurrency : ""}
           />
+          <Table style={{ tableLayout: "fixed" }}>
+            <Table.Header>
+              <Table.Column>Block</Table.Column>
+            </Table.Header>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>
+                  <a href={"?route=BLOCK&hash=" + transaction.blockhash}>
+                    {transaction.height.toLocaleString()}
+                  </a>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
         </div>
       }
     />
