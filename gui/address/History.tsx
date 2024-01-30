@@ -37,7 +37,12 @@ export function History({ address }: { address: string | null }) {
   }
 
   const rows: any[] = [];
-  history.map((historyItem) => {
+  const MAX_ROWS = 100;
+
+  history.map((historyItem, index) => {
+    if (index > MAX_ROWS) {
+      return;
+    }
     const URL = "?route=TRANSACTION&id=" + historyItem.transactionId;
 
     for (let asset of historyItem.assets) {
